@@ -1,0 +1,12 @@
+[{
+    "_id": 3,
+    "transactionDate": "2024-03-05",
+    "amount": 120.75,
+    "description": "New Transaction to Upsert"
+  },
+{
+  "_id": 4,
+  "transactionDate": "2024-03-06",
+  "amount": 160.55,
+  "description": "test"
+}]
