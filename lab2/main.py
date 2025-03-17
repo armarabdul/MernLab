@@ -5,16 +5,23 @@ client = MongoClient("mongodb://localhost:27017/")
 db = client["usermanaged"]
 collection = db["users"]
 
-# Sample Data (Drop if exists and insert new)
-collection.drop()
-collection.insert_many([
-    {"Name": "Somu", "Payment": {"Total": 600}, "Transaction": {"price": 400}},
-    {"Name": "Ravi", "Payment": {"Total": 700}, "Transaction": {"price": 350}},
-    {"Name": "Anu", "Payment": {"Total": 500}, "Transaction": {"price": 450}}
+# a) Find any record where Name is 'Somu'
+name_query = collection.find_one({"Name": "Somu"})
+print("a) Record where Name is 'Somu':", name_query)
+
+# b) Find any record where total payment amount (Payment.Total) is 600
+payment_query = collection.find_one({"Payment.Total": 600})
+print("b) Record where Payment.Total is 600:", payment_query)
+
+# c) Find records where price (Transaction.price) is between 300 and 500
+price_query = list(collection.find({"Transaction.price": {"$gte": 300, "$lte": 500}}))
+print("c) Records where Transaction.price is between 300 and 500:", price_query)
+
+# d) Calculate the total transaction amount by summing Payment.Total
+total_transaction_amount = collection.aggregate([
+    {"$group": {"_id": None, "totalAmount": {"$sum": "$Payment.Total"}}}
 ])
 
-# Queries
-print("a.", collection.find_one({"Name": "Somu"}))  
-print("b.", collection.find_one({"Payment.Total": 600}))
-print("c.", collection.find_one({"Transaction.price": {"$gte": 300, "$lte": 500}}))
-print("d. Total Payment:", collection.aggregate([{"$group": {"_id": None, "Total": {"$sum": "$Payment.Total"}}}]).next()["Total"])
+# Extract result
+total_amount = next(total_transaction_amount, {}).get("totalAmount", 0)
+print("d) Total transaction amount:", total_amount)
