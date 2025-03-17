@@ -3,43 +3,28 @@ from pymongo import MongoClient
 
 # Connect to MongoDB
 client = MongoClient("mongodb://localhost:27017/")
-db = client.usermanaged
-collection = db.transactions
+collection = client.usermanaged.transactions
 
-# Drop collection if it exists
+# Drop existing collection
 collection.drop()
 
-# Load transactions.json
-with open("transactions.json", "r") as file:
+def load_json(filename):
+    """Load and validate JSON data as a list."""
     try:
-        data = json.load(file)
-        if isinstance(data, list):
-            collection.insert_many(data)
-        else:
-            print("Error: transactions.json is not a list of objects.")
+        with open(filename, "r") as file:
+            data = json.load(file)
+            return data if isinstance(data, list) else []
     except json.JSONDecodeError as e:
-        print(f"JSON Decode Error in transactions.json: {e}")
+        print(f"❌ Error in {filename}: {e}")
+        return []
 
-# Upsert transactions_upsert.json
-with open("transactions_upsert.json", "r") as file:
-    try:
-        upsert_data = json.load(file)
-        print("DEBUG: Loaded upsert data ->", upsert_data)  # Debugging line
-        
-        if isinstance(upsert_data, list):  # Ensure it's a list
-            for record in upsert_data:
-                if isinstance(record, dict) and "_id" in record:
-                    collection.update_one(
-                        {"_id": record["_id"]},  # Use _id as unique identifier
-                        {"$set": record},  
-                        upsert=True  # Insert if not exists, update otherwise
-                    )
-                else:
-                    print(f"Skipping invalid record: {record}")
-        else:
-            print("Error: transactions_upsert.json is not a valid list of objects.")
+# Insert transactions.json data
+if (data := load_json("transactions.json")):
+    collection.insert_many(data)
 
-    except json.JSONDecodeError as e:
-        print(f"JSON Decode Error in transactions_upsert.json: {e}")
+# Upsert transactions_upsert.json data
+for record in load_json("transactions_upsert.json"):
+    if isinstance(record, dict) and "_id" in record:
+        collection.update_one({"_id": record["_id"]}, {"$set": record}, upsert=True)
 
-print("Data loaded and upserted successfully.")
+print(" Data loaded and upserted successfully.")
