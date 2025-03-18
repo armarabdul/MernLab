@@ -23,23 +23,43 @@ const studentSchema = new mongoose.Schema({
 // Create a Student model
 const Student = mongoose.model("Student", studentSchema);
 
-// API to store student data in MongoDB
+// ✅ API to store student data in MongoDB
 app.post("/addStudent", async (req, res) => {
     try {
-        const { usn, name, sem, year_of_admission } = req.body;
-        
-        const newStudent = new Student({
-            usn,
-            name,
-            sem,
-            year_of_admission
-        });
+        console.log("Received Data:", req.body); // Debugging Line
 
-        await newStudent.save(); // Save to database
+        const { usn, name, sem, year_of_admission } = req.body;
+
+        if (!usn || !name || !sem || !year_of_admission) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
+        const newStudent = new Student({ usn, name, sem, year_of_admission });
+        await newStudent.save();
+
         res.status(201).json({ message: "Student added successfully!" });
 
     } catch (error) {
         res.status(500).json({ error: "Failed to add student" });
+    }
+});
+
+
+// ✅ API to search students by partial name
+app.get("/searchStudent/:name", async (req, res) => {
+    try {
+        const partialName = req.params.name;
+        
+        // Find students whose names contain the given string (case-insensitive)
+        const students = await Student.find({ name: { $regex: partialName, $options: "i" } });
+
+        if (students.length === 0) {
+            return res.status(404).json({ message: "No students found" });
+        }
+
+        res.json(students);
+    } catch (error) {
+        res.status(500).json({ error: "Failed to search students" });
     }
 });
 
