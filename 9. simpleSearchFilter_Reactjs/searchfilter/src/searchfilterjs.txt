@@ -1,0 +1,44 @@
+import { useState } from "react";
+
+const SearchFilter = () => {
+  // Sample list of items
+  const items = ["Apple", "Banana", "Cherry", "Grapes", "Mango", "Orange", "Pineapple", "Strawberry"];
+
+  // State to manage search query
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Function to filter items based on the search query
+  const filteredItems = items.filter((item) =>
+    item.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="flex flex-col items-center p-6">
+      <h2 className="text-xl font-bold mb-4">Search Filter</h2>
+
+      {/* Search Input */}
+      <input
+        type="text"
+        placeholder="Search..."
+        className="p-2 border border-gray-300 rounded-md w-64 mb-4"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+      />
+
+      {/* Display Filtered List */}
+      <ul className="bg-white shadow-lg rounded-md p-4 w-64">
+        {filteredItems.length > 0 ? (
+          filteredItems.map((item, index) => (
+            <li key={index} className="p-2 border-b last:border-b-0">
+              {item}
+            </li>
+          ))
+        ) : (
+          <li className="text-gray-500">No matching items</li>
+        )}
+      </ul>
+    </div>
+  );
+};
+
+export default SearchFilter;
