@@ -66,3 +66,9 @@ app.get("/searchStudent/:name", async (req, res) => {
 // Start the server
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+//to send the data from the server to db, we user either postman for testing API's or cURL, client URL.
+// curl -X POST "http://localhost:3000/addStudent" -H "Content-Type: application/json" -d "{\"usn\": \"1RV21CS001\", \"name\": \"John Doe\", \"sem\": 6, \"year_of_admission\": 2021}"
+
+//to search for the student through searchStudent api we use
+//curl -X GET "http://localhost:3000/searchStudent/John"
