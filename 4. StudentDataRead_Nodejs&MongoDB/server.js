@@ -66,3 +66,13 @@ app.get("/searchStudent/:name", async (req, res) => {
 // Start the server
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+
+
+// {
+//     "usn": "1RV21CS001",
+//     "name": "John Doe",
+//     "sem": 6,
+//     "year_of_admission": 2021
+//   }
+  
