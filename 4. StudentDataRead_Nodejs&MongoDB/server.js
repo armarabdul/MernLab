@@ -1,3 +1,8 @@
+// . Read the data of a student containing usn, name, sem, year_of_admission from node js and store it in 
+// the mongodb 
+// b. For a partial name given in node js, search all the names from mongodb student documents created in 
+// Question(a) 
+
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");

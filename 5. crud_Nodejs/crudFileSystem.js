@@ -1,3 +1,4 @@
+// Implement all CRUD operations on a File System using Node JS 
 const fs = require("fs");
 const filePath = "example.txt"; // File to be used for CRUD operations
 
