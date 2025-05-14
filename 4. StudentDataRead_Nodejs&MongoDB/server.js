@@ -73,8 +73,3 @@ const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 
-<<<<<<< HEAD
-
-  
-=======
->>>>>>> 6482e441a1bc2b343b1d4d6df18c68c948264e76
