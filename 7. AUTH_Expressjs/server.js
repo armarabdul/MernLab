@@ -1,38 +1,32 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-
 const app = express();
-app.use(bodyParser.json());
-app.use(cors());
 
-// In-memory user storage (for lab purpose)
-const users = {
-    "test@example.com": {
-        email: "test@example.com",
-        password: bcrypt.hashSync("password123", 10) // Pre-hashed password
-    }
-};
+app.use(express.json());
 
-// Login API (POST method)
-app.post("/login", async (req, res) => {
-    const { email, password } = req.body;
+const user = { email: "test@mail.com", password: "1234" };
 
-    // Check if user exists
-    if (!users[email]) {
-        return res.status(401).json({ message: "User not found!" });
-    }
-
-    // Compare password with stored hash
-    const isMatch = await bcrypt.compare(password, users[email].password);
-    if (!isMatch) {
-        return res.status(401).json({ message: "Invalid credentials!" });
-    }
-
-    res.json({ message: "Login successful!" });
+app.get("/", (req, res) => {
+    res.send(`
+        <form onsubmit="event.preventDefault();fetch('/login',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({ email:e.value, password:p.value })
+        }).then(r=>r.json()).then(d=>msg.innerText=d.message)">
+            <input id="e" type="email" placeholder="Email" required>
+            <input id="p" type="password" placeholder="Password" required>
+            <button>Login</button>
+        </form>
+        <p id="msg"></p>
+    `);
 });
 
-// Start server
-const PORT = 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.post("/login", (req, res) => {
+    const { email, password } = req.body;
+    if (email === user.email && password === user.password) {
+        res.json({ message: "Login Successful!" });
+    } else {
+        res.status(401).json({ message: "Invalid Credentials" });
+    }
+});
+
+app.listen(3000, () => console.log("http://localhost:3000"));
