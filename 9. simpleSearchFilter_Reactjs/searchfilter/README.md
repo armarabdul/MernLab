@@ -1,3 +1,36 @@
+import React, { useState } from "react";
+
+function App() {
+  const fruits = ["Apple", "Banana", "Orange", "Mango", "Grapes"];
+
+  const [search, setSearch] = useState("");
+
+  const filteredFruits = fruits.filter((fruit) =>
+    fruit.toLowerCase().includes(search.toLowerCase())
+  );
+
+  return (
+    <div>
+      <h2>Search Filter</h2>
+
+      <input
+        type="text"
+        placeholder="Search fruit"
+        onChange={(e) => setSearch(e.target.value)}
+      />
+
+      <ul>
+        {filteredFruits.map((fruit, index) => (
+          <li key={index}>{fruit}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+export default App;
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
